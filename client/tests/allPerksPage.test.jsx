@@ -60,10 +60,9 @@ describe('AllPerks page (Directory)', () => {
       { initialEntries: ['/explore'] }
     );
 
-    // Wait for initial fetch to finish and the seeded card to appear.
-    await waitFor(() => {
-      expect(screen.getByText(seededPerk.title)).toBeInTheDocument();
-    });
+    // Wait for initial fetch to finish and the seeded card to appear. Use
+    // `findByText` which retries until the element appears or times out.
+    await screen.findByText(seededPerk.title, {}, { timeout: 10000 });
 
   // Choose the seeded merchant from the merchant dropdown. Use role lookup
   // because the label isn't associated with the select via htmlFor.
@@ -71,9 +70,7 @@ describe('AllPerks page (Directory)', () => {
     fireEvent.change(merchantSelect, { target: { value: seededPerk.merchant } });
 
     // Wait for the filtered results to appear (debounced network call).
-    await waitFor(() => {
-      expect(screen.getByText(seededPerk.title)).toBeInTheDocument();
-    });
+    await screen.findByText(seededPerk.title, {}, { timeout: 10000 });
 
     // The summary text should reflect the number of matching perks.
     expect(screen.getByText(/showing/i)).toHaveTextContent('Showing');
